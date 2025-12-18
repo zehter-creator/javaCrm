@@ -53,4 +53,21 @@ public class UrunService {
             urunRepository.save(urun);
         }
     }
+    
+    // English aliases for controllers
+    public List<Urun> findAll() {
+        return tumunuGetir();
+    }
+    
+    public Urun save(Urun urun) {
+        return kaydet(urun);
+    }
+    
+    public Optional<Urun> findById(Integer id) {
+        return getir(id);
+    }
+    
+    public List<Urun> findLowStockProducts() {
+        return dusukStokluUrunleriGetir();
+    }
 }

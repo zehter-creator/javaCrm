@@ -126,7 +126,127 @@
                     <mainClass>com.ticari.CrmApplication</mainClass>
                 </configuration>
             </plugin>
+            
+            <!-- Maven JAR Plugin for creating executable JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.ticari.CrmApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <!-- Maven Dependency Plugin for copying dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <!-- Profiles for platform-specific builds -->
+    <profiles>
+        <!-- Windows executable profile -->
+        <profile>
+            <id>windows-installer</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <name>TicariCRM</name>
+                            <appVersion>1.0.0</appVersion>
+                            <vendor>Ticari Solutions</vendor>
+                            <destination>target/dist</destination>
+                            <input>target</input>
+                            <mainJar>Crm-1.0-SNAPSHOT.jar</mainJar>
+                            <mainClass>com.ticari.CrmApplication</mainClass>
+                            <javaOptions>
+                                <option>-Dfile.encoding=UTF-8</option>
+                                <option>-Xms256m</option>
+                                <option>-Xmx1024m</option>
+                            </javaOptions>
+                            <winMenu>true</winMenu>
+                            <winDirChooser>true</winDirChooser>
+                            <winShortcut>true</winShortcut>
+                            <winMenuGroup>Ticari CRM</winMenuGroup>
+                            <type>EXE</type>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>win-exe</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Linux DEB/RPM profile -->
+        <profile>
+            <id>linux-installer</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <name>TicariCRM</name>
+                            <appVersion>1.0.0</appVersion>
+                            <vendor>Ticari Solutions</vendor>
+                            <destination>target/dist</destination>
+                            <input>target</input>
+                            <mainJar>Crm-1.0-SNAPSHOT.jar</mainJar>
+                            <mainClass>com.ticari.CrmApplication</mainClass>
+                            <javaOptions>
+                                <option>-Dfile.encoding=UTF-8</option>
+                                <option>-Xms256m</option>
+                                <option>-Xmx1024m</option>
+                            </javaOptions>
+                            <linuxShortcut>true</linuxShortcut>
+                            <linuxMenuGroup>Office</linuxMenuGroup>
+                            <type>DEB</type>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>linux-deb</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

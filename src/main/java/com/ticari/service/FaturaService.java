@@ -78,4 +78,17 @@ public class FaturaService {
                 .map(Fatura::getGenelToplam)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+    
+    // English aliases for controllers
+    public List<Fatura> findAll() {
+        return tumunuGetir();
+    }
+    
+    public Fatura save(Fatura fatura) {
+        return kaydet(fatura);
+    }
+    
+    public Optional<Fatura> findById(Integer id) {
+        return getir(id);
+    }
 }
