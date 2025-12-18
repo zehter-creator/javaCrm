@@ -52,4 +52,21 @@ public class KasaBankaService {
                 .map(KasaBanka::getBakiye)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+    
+    // English aliases for controllers
+    public List<KasaBanka> findAll() {
+        return tumunuGetir();
+    }
+    
+    public KasaBanka save(KasaBanka hesap) {
+        return kaydet(hesap);
+    }
+    
+    public Optional<KasaBanka> findById(Integer id) {
+        return getir(id);
+    }
+    
+    public BigDecimal getToplamBakiye() {
+        return toplamBakiyeHesapla();
+    }
 }

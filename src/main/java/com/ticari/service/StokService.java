@@ -46,4 +46,17 @@ public class StokService {
     public List<StokGirisCikis> tarihAraliginaGoreBul(LocalDateTime baslangic, LocalDateTime bitis) {
         return stokRepository.findByTarihBetween(baslangic, bitis);
     }
+    
+    // English aliases for controllers
+    public StokGirisCikis save(StokGirisCikis stokHareket) {
+        return kaydet(stokHareket);
+    }
+    
+    public List<StokGirisCikis> findAll() {
+        return tumunuGetir();
+    }
+    
+    public Optional<StokGirisCikis> findById(Integer id) {
+        return getir(id);
+    }
 }

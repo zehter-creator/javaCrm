@@ -54,4 +54,17 @@ public class CariService {
             cariRepository.save(cari);
         }
     }
+    
+    // English aliases for controllers
+    public List<Cari> findAll() {
+        return tumunuGetir();
+    }
+    
+    public Cari save(Cari cari) {
+        return kaydet(cari);
+    }
+    
+    public Optional<Cari> findById(Integer id) {
+        return getir(id);
+    }
 }

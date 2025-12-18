@@ -55,4 +55,17 @@ public class TeklifService {
             teklifRepository.save(teklif);
         }
     }
+    
+    // English aliases for controllers
+    public List<Teklif> findAll() {
+        return tumunuGetir();
+    }
+    
+    public Teklif save(Teklif teklif) {
+        return kaydet(teklif);
+    }
+    
+    public Optional<Teklif> findById(Integer id) {
+        return getir(id);
+    }
 }

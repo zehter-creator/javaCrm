@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ticari.controller.DashboardController">
    
    <left>
       <VBox prefHeight="800.0" prefWidth="240.0" style="-fx-background-color: #2D3447;" BorderPane.alignment="CENTER">
@@ -32,7 +32,7 @@
                   </Label>
                </children>
             </Pane>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: #232938; -fx-cursor: hand; -fx-border-color: #2D3447; -fx-border-width: 0 0 0 5;" text="📊  Genel Bakış" textFill="WHITE">
+            <Button fx:id="btnGenelBakis" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleGenelBakis" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: #232938; -fx-cursor: hand; -fx-border-color: #2D3447; -fx-border-width: 0 0 0 5;" text="📊  Genel Bakış" textFill="WHITE">
                <padding>
                   <Insets left="30.0" />
                </padding>
@@ -40,7 +40,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="📦  Ürün ve Stok" textFill="#a1a1a1">
+            <Button fx:id="btnUrunStok" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleUrunStok" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="📦  Ürün ve Stok" textFill="#a1a1a1">
                <padding>
                   <Insets left="30.0" />
                </padding>
@@ -48,7 +48,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="👥  Cari Hesaplar" textFill="#a1a1a1">
+            <Button fx:id="btnCariHesaplar" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleCariHesaplar" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="👥  Cari Hesaplar" textFill="#a1a1a1">
                <padding>
                   <Insets left="30.0" />
                </padding>
@@ -56,7 +56,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="🧾  Faturalar" textFill="#a1a1a1">
+            <Button fx:id="btnFaturalar" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleFaturalar" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="🧾  Faturalar" textFill="#a1a1a1">
                <padding>
                   <Insets left="30.0" />
                </padding>
@@ -64,7 +64,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="💰  Kasa ve Banka" textFill="#a1a1a1">
+            <Button fx:id="btnKasaBanka" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleKasaBanka" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="💰  Kasa ve Banka" textFill="#a1a1a1">
                <padding>
                   <Insets left="30.0" />
                </padding>
@@ -72,7 +72,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="📝  Teklifler" textFill="#a1a1a1">
+            <Button fx:id="btnTeklifler" alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#handleTeklifler" prefHeight="55.0" prefWidth="240.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="📝  Teklifler" textFill="#a1a1a1">
                <padding>
                   <Insets left="30.0" />
                </padding>
@@ -105,8 +105,8 @@
                            </children>
                         </VBox>
                         <Pane HBox.hgrow="ALWAYS" />
-                        <TextField prefHeight="35.0" prefWidth="250.0" promptText="Cari, Ürün veya Fatura Ara..." style="-fx-background-color: white; -fx-border-color: #E1E1E1; -fx-background-radius: 5; -fx-border-radius: 5;" />
-                        <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #2D3447; -fx-text-fill: white; -fx-cursor: hand;" text="Sorgula" />
+                        <TextField fx:id="txtArama" prefHeight="35.0" prefWidth="250.0" promptText="Cari, Ürün veya Fatura Ara..." style="-fx-background-color: white; -fx-border-color: #E1E1E1; -fx-background-radius: 5; -fx-border-radius: 5;" />
+                        <Button fx:id="btnSorgula" mnemonicParsing="false" onAction="#handleSorgula" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #2D3447; -fx-text-fill: white; -fx-cursor: hand;" text="Sorgula" />
                      </children>
                   </HBox>
                   
@@ -282,10 +282,10 @@
                               </Label>
                               <TableView fx:id="tblKritikStok" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);" VBox.vgrow="ALWAYS">
                                 <columns>
-                                  <TableColumn prefWidth="75.0" text="Ürün ID" />
-                                  <TableColumn prefWidth="200.0" text="Ürün Adı" />
-                                    <TableColumn prefWidth="100.0" text="Kalan" />
-                                    <TableColumn prefWidth="100.0" text="Min. Sınır" />
+                                  <TableColumn fx:id="colUrunId" prefWidth="75.0" text="Ürün ID" />
+                                  <TableColumn fx:id="colUrunAd" prefWidth="200.0" text="Ürün Adı" />
+                                    <TableColumn fx:id="colKalan" prefWidth="100.0" text="Kalan" />
+                                    <TableColumn fx:id="colMinSinir" prefWidth="100.0" text="Min. Sınır" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

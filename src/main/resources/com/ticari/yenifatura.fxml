@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: #F4F4F4;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ticari.controller.YeniFaturaController">
    
    <top>
       <VBox spacing="10.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);" BorderPane.alignment="CENTER">
@@ -96,25 +96,25 @@
                   </Label>
                   <TextField fx:id="txtSatirToplami" editable="false" prefWidth="100.0" promptText="Toplam" style="-fx-background-color: #f9f9f9;" />
                   <Pane HBox.hgrow="ALWAYS" />
-                  <Button fx:id="btnSatirEkle" mnemonicParsing="false" style="-fx-background-color: #2FA84F; -fx-text-fill: white; -fx-cursor: hand;" text="+ Listeye Ekle" />
+                  <Button fx:id="btnSatirEkle" mnemonicParsing="false" onAction="#handleSatirEkle" style="-fx-background-color: #2FA84F; -fx-text-fill: white; -fx-cursor: hand;" text="+ Listeye Ekle" />
                </children>
             </HBox>
             
             <TableView fx:id="tblFaturaDetay" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn prefWidth="75.0" text="#" />
-                <TableColumn prefWidth="250.0" text="Ürün Adı" />
-                  <TableColumn prefWidth="100.0" text="Miktar" />
-                  <TableColumn prefWidth="100.0" text="Birim" />
-                  <TableColumn prefWidth="120.0" text="Birim Fiyat" />
-                  <TableColumn prefWidth="120.0" text="KDV %" />
-                  <TableColumn prefWidth="150.0" text="Satır Tutarı" />
+                <TableColumn fx:id="colSira" prefWidth="75.0" text="#" />
+                <TableColumn fx:id="colUrunAd" prefWidth="250.0" text="Ürün Adı" />
+                  <TableColumn fx:id="colMiktar" prefWidth="100.0" text="Miktar" />
+                  <TableColumn fx:id="colBirim" prefWidth="100.0" text="Birim" />
+                  <TableColumn fx:id="colBirimFiyat" prefWidth="120.0" text="Birim Fiyat" />
+                  <TableColumn fx:id="colKdv" prefWidth="120.0" text="KDV %" />
+                  <TableColumn fx:id="colSatirTutari" prefWidth="150.0" text="Satır Tutarı" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <Button mnemonicParsing="false" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Seçili Satırı Sil" />
+            <Button mnemonicParsing="false" onAction="#handleSeciliSatirSil" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Seçili Satırı Sil" />
          </children>
       </VBox>
    </center>
@@ -172,8 +172,8 @@
                   
                   <HBox alignment="CENTER_RIGHT" spacing="15.0">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #555; -fx-cursor: hand;" text="İptal" />
-                        <Button fx:id="btnFaturayiKaydet" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #2D3447; -fx-text-fill: white; -fx-cursor: hand;" text="✔  Kaydet" />
+                        <Button mnemonicParsing="false" onAction="#handleIptal" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #555; -fx-cursor: hand;" text="İptal" />
+                        <Button fx:id="btnFaturayiKaydet" mnemonicParsing="false" onAction="#handleFaturayiKaydet" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #2D3447; -fx-text-fill: white; -fx-cursor: hand;" text="✔  Kaydet" />
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
