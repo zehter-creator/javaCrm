@@ -6,7 +6,7 @@
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "TicariCRM"
 #define MyAppURL "https://ticaricrm.com"
-#define MyAppExeName "TicariCRM.exe"
+#define MyAppExeName "start-application.bat"
 #define MyAppMainJar "Crm-1.0-SNAPSHOT.jar"
 
 [Setup]
@@ -26,7 +26,7 @@ OutputDir=..\dist
 
 ; Installer UI Configuration
 WizardStyle=modern
-SetupIconFile=..\src\main\resources\icon.ico
+; SetupIconFile=..\src\main\resources\icon.ico  ; Icon file is optional - commented out if missing
 
 ; Compression
 Compression=lzma2/ultra64
