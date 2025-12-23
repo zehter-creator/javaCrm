@@ -1,0 +1,178 @@
+name: Build Windows Installer
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+  push:
+    branches:
+      - feature/h2-database-runtime-config
+      - master
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows-installer:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Java JDK 21
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        cache: 'maven'
+    
+    - name: Build Application
+      run: |
+        Write-Host "Building Java application..." -ForegroundColor Cyan
+        mvn clean package -DskipTests
+        Write-Host "Build completed successfully!" -ForegroundColor Green
+    
+    - name: Copy Dependencies
+      run: |
+        Write-Host "Copying dependencies..." -ForegroundColor Cyan
+        mvn dependency:copy-dependencies -DoutputDirectory=target/lib
+        $depCount = (Get-ChildItem target/lib -File).Count
+        Write-Host "Copied $depCount dependencies" -ForegroundColor Green
+    
+    - name: Download and Extract JRE
+      run: |
+        Write-Host "Downloading Java Runtime Environment 21..." -ForegroundColor Cyan
+        $jreUrl = "https://api.adoptium.net/v3/binary/latest/21/ga/windows/x64/jre/hotspot/normal/eclipse?project=jdk"
+        
+        # Download JRE
+        Invoke-WebRequest -Uri $jreUrl -OutFile jre.zip -UseBasicParsing
+        Write-Host "JRE downloaded" -ForegroundColor Green
+        
+        # Extract JRE
+        Write-Host "Extracting JRE..." -ForegroundColor Cyan
+        Expand-Archive -Path jre.zip -DestinationPath jre-temp -Force
+        
+        # Find the JRE directory (nested structure)
+        $extractedJre = Get-ChildItem jre-temp -Directory | Select-Object -First 1
+        
+        # Create jre directory and move contents
+        New-Item -ItemType Directory -Force -Path jre | Out-Null
+        Get-ChildItem $extractedJre.FullName | Move-Item -Destination jre -Force
+        
+        Write-Host "JRE extracted to jre/" -ForegroundColor Green
+        
+        # Cleanup
+        Remove-Item jre.zip -Force
+        Remove-Item jre-temp -Recurse -Force
+    
+    - name: Install Inno Setup
+      run: |
+        Write-Host "Installing Inno Setup 6..." -ForegroundColor Cyan
+        choco install innosetup -y
+        Write-Host "Inno Setup installed" -ForegroundColor Green
+    
+    - name: Install Launch4j (Optional)
+      continue-on-error: true
+      run: |
+        Write-Host "Installing Launch4j..." -ForegroundColor Cyan
+        choco install launch4j -y
+        Write-Host "Launch4j installed" -ForegroundColor Green
+    
+    - name: Create Native Launcher with Launch4j
+      continue-on-error: true
+      run: |
+        $launch4jPath = "C:\Program Files (x86)\Launch4j\launch4jc.exe"
+        if (Test-Path $launch4jPath) {
+          Write-Host "Creating native Windows executable..." -ForegroundColor Cyan
+          & $launch4jPath launch4j-config.xml
+          
+          if (Test-Path "target\TicariCRM.exe") {
+            Write-Host "Native executable created: target\TicariCRM.exe" -ForegroundColor Green
+          } else {
+            Write-Host "Launch4j did not create executable, will use JAR directly" -ForegroundColor Yellow
+          }
+        } else {
+          Write-Host "Launch4j not found, skipping native executable creation" -ForegroundColor Yellow
+        }
+    
+    - name: Build Windows Installer
+      run: |
+        Write-Host "Building Windows installer with Inno Setup..." -ForegroundColor Cyan
+        
+        # Determine version
+        $version = "${{ github.event.inputs.version }}"
+        if (-not $version) {
+          $version = "1.0.0"
+        }
+        
+        # Create dist directory
+        New-Item -ItemType Directory -Force -Path dist | Out-Null
+        
+        # Compile with Inno Setup
+        $innoSetupPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+        & $innoSetupPath installer\TicariCRM.iss /DMyAppVersion=$version
+        
+        if ($LASTEXITCODE -eq 0) {
+          Write-Host "Installer created successfully!" -ForegroundColor Green
+          
+          $setupFile = Get-ChildItem dist\TicariCRM_Setup_*.exe | Select-Object -First 1
+          if ($setupFile) {
+            $size = [math]::Round($setupFile.Length / 1MB, 2)
+            Write-Host "Output: $($setupFile.FullName)" -ForegroundColor Green
+            Write-Host "Size: $size MB" -ForegroundColor Cyan
+          }
+        } else {
+          Write-Host "Installer creation failed!" -ForegroundColor Red
+          exit 1
+        }
+    
+    - name: Upload Installer as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: TicariCRM-Setup-Windows
+        path: dist/TicariCRM_Setup_*.exe
+        retention-days: 90
+    
+    - name: Create Release (on tag push)
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/TicariCRM_Setup_*.exe
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Build Summary
+      run: |
+        Write-Host ""
+        Write-Host "========================================" -ForegroundColor Cyan
+        Write-Host "  Build Completed Successfully!" -ForegroundColor Green
+        Write-Host "========================================" -ForegroundColor Cyan
+        Write-Host ""
+        
+        Write-Host "Artifacts Created:" -ForegroundColor Cyan
+        Write-Host "  Application JAR: target\Crm-1.0-SNAPSHOT.jar" -ForegroundColor White
+        Write-Host "  Dependencies: target\lib\" -ForegroundColor White
+        Write-Host "  Java Runtime: jre\" -ForegroundColor White
+        
+        if (Test-Path "target\TicariCRM.exe") {
+          Write-Host "  Native Launcher: target\TicariCRM.exe" -ForegroundColor White
+        }
+        
+        $setupFile = Get-ChildItem dist\TicariCRM_Setup_*.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($setupFile) {
+          $size = [math]::Round($setupFile.Length / 1MB, 2)
+          Write-Host ""
+          Write-Host "Final Installer:" -ForegroundColor Cyan
+          Write-Host "  $($setupFile.Name)" -ForegroundColor Green
+          Write-Host "  Size: $size MB" -ForegroundColor Cyan
+        }
+        
+        Write-Host ""
+        Write-Host "Download the installer from the 'Artifacts' section above." -ForegroundColor Yellow
+        Write-Host ""
